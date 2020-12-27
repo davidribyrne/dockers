@@ -1,21 +1,17 @@
-# docker build -t davidribyrne/ubuntu -f ubuntu.Dockerfile .
-
-FROM ubuntu
+FROM kalilinux/kali-rolling:latest
 
 RUN apt-get update
-RUN apt-get install -y apt-utils
 RUN apt-get install -y openssh-server
 RUN apt-get install -y sudo
 RUN apt-get install -y wget
-RUN apt-get install -y vim-tiny
 RUN apt-get install -y bash-completion
-#RUN apt-get install -y command-not-found
 RUN apt-get install -y curl
 RUN apt-get install -y iputils-ping
 RUN apt-get install -y net-tools
-RUN apt-get install -y dialog
+
 
 RUN apt-get upgrade -y
+
 RUN mkdir /var/run/sshd
 RUN sed -ri 's/#PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
 RUN sed -ri 's/#PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config
