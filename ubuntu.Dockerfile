@@ -14,6 +14,7 @@ RUN apt-get install -y curl
 RUN apt-get install -y iputils-ping
 RUN apt-get install -y net-tools
 RUN apt-get install -y dialog
+RUN apt-get install -y unzip
 
 RUN apt-get upgrade -y
 RUN mkdir /var/run/sshd

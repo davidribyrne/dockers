@@ -1,0 +1,41 @@
+FROM ubuntu:latest
+RUN apt-get update -y
+RUN apt-get install -y nano \
+    iputils-ping \
+    ssh \
+    sudo \
+    openssh-server \
+    telnet \
+    net-tools \
+    iptables \
+    iproute2
+RUN mkdir /var/run/sshd
+# SSH login fix. Otherwise user is kicked off after login
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+RUN \
+    groupadd -g 999 awx && useradd -u 999 -g awx -G sudo -m -s /bin/bash awx-user && \
+    sed -i /etc/sudoers -re 's/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g' && \
+    sed -i /etc/sudoers -re 's/^root.*/root ALL=(ALL:ALL) NOPASSWD: ALL/g' && \
+    sed -i /etc/sudoers -re 's/^#includedir.*/## **Removed the include directive** ##"/g' && \
+    echo "awx-user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    echo "Customized the sudoers file for passwordless access to the awx-user user!" && \
+    echo "awx-user user:";  su - awx-user -c id
+RUN mkdir -p /home/awx-user/.ssh
+COPY id_ed25519.pub /home/awx-user/.ssh/authorized_keys
+RUN sed -ri s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config && \
+    sed -ri 's/#PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
+RUN apt-get clean
+USER awx-user
+RUN sudo chown awx-user:awx /home/awx-user/.ssh && \
+    sudo chown awx-user:awx /home/awx-user/.ssh/authorized_keys && \
+    sudo chmod 700 /home/awx-user/.ssh && \
+    sudo chmod 600 /home/awx-user/.ssh/authorized_keys
+RUN mkdir /home/awx-user/motionpro && \
+    mkdir /home/awx-user/motionpro/app
+COPY MotionPro_Linux_Ubuntu_x64_v1.2.7_0608.sh /home/awx-user/motionpro/MotionPro_Linux_Ubuntu_x64_v1.2.7_0608.sh
+RUN sudo chmod +x /home/awx-user/motionpro/MotionPro_Linux_Ubuntu_x64_v1.2.7_0608.sh && \
+    printf '%s\n' '#!/bin/bash' 'exit 0' | sudo tee -a /etc/rc.local && \
+    sudo chmod +x /etc/rc.local
+WORKDIR /home/awx-user
+EXPOSE 22
+

@@ -8,7 +8,11 @@ RUN apt-get install -y bash-completion
 RUN apt-get install -y curl
 RUN apt-get install -y iputils-ping
 RUN apt-get install -y net-tools
-
+RUN apt-get install -y nmap
+RUN apt-get install -y ncat
+RUN apt-get install -y masscan
+RUN apt-get install -y tcpdump
+RUN apt-get install -y bettercap bettercap-ui
 
 RUN apt-get upgrade -y
 

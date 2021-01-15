@@ -1,0 +1,2 @@
+FROM davidribyrne/ubuntu-build
+RUN apt-get install -y build-essential git mtd-utils gzip bzip2 tar arj lhasa p7zip p7zip-full cabextract  cramfsswap squashfs-tools zlib1g-dev liblzma-dev liblzo2-dev sleuthkit default-jdk lzop srecord cpio python3-crypto python3-pip python3-tk python3-lzo libqt5opengl5 unrar-free fusecram squashfuse python-crypto python-tk unzip python-pip
