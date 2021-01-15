@@ -31,4 +31,4 @@ RUN chown -R david:david /home/david
 
 RUN apt-get clean
 EXPOSE 22
-CMD    ["/usr/sbin/sshd", "-D"]
+CMD ["/usr/sbin/sshd", "-D"]
